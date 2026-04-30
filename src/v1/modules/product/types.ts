@@ -9,4 +9,9 @@ export interface Product {
 export interface IProductService {
 	getAllProducts(): Product[];
 	getProductById(id: string): Product | undefined;
+	createProduct(product: Product): Product;
+	updateProduct(
+		id: string,
+		updateFields: Partial<Product>,
+	): Product | undefined;
 }

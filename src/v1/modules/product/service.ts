@@ -26,5 +26,56 @@ class Service implements IProductService {
 		const findProduct = this.products.find((product) => product.id === id);
 		return findProduct;
 	}
+
+	createProduct(newProduct: Product): Product {
+		this.products.push(newProduct);
+		return newProduct;
+	}
+
+	updateProduct(
+		id: string,
+		updateFields: Partial<Product>,
+	): Product | undefined {
+		const productIndex = this.products.findIndex(
+			(product) => product.id === id,
+		);
+
+		if (productIndex === -1) {
+			return undefined;
+		}
+
+		const updatedProduct: Product = {
+			...this.products[productIndex],
+			...updateFields,
+		};
+
+		this.products[productIndex] = updatedProduct;
+
+		return updatedProduct;
+	}
+
+	//vieja forma
+	// 	updateProduct(
+	// 	id: string,
+	// 	updateFields: Partial<Product>,
+	// ): Product | undefined {
+	// 	const productIndex = this.products.find((product) => product.id === id);
+
+	// 	if (!productIndex) {
+	// 		return undefined;
+	// 	}
+
+	// 	const updatedProduct: Product = {
+	// 		...productIndex,
+	// 		...updateFields,
+	// 	};
+
+	// this.products = this.products.map((prd) => {
+	// 	return prd.id === id ? updatedProduct : prd;
+	// });
+
+	// 	return updatedProduct;
+	// }
 }
+
 export const ProductSvc: IProductService = new Service();
