@@ -27,9 +27,14 @@ class Service implements IProductService {
 		return findProduct;
 	}
 
-	createProduct(newProduct: Product): Product {
-		this.products.push(newProduct);
-		return newProduct;
+	createProduct(newProduct: Omit<Product, "id">): Product {
+		const product: Product = {
+			id: crypto.randomUUID(),
+			...newProduct,
+		};
+
+		this.products.push(product);
+		return product;
 	}
 
 	updateProduct(
@@ -76,6 +81,20 @@ class Service implements IProductService {
 
 	// 	return updatedProduct;
 	// }
+
+	deleteProduct(id: string): Product | undefined {
+		///const deletedProduct = this.products.find((product) => product.id === id);
+		///this.products.filter((product) => product.id !== id);
+		const index = this.products.findIndex((product) => product.id === id);
+
+		if (index === -1) {
+			return undefined;
+		}
+
+		const [deleteProduct] = this.products.splice(index, 1);
+
+		return deleteProduct;
+	}
 }
 
 export const ProductSvc: IProductService = new Service();

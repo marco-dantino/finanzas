@@ -25,7 +25,7 @@ export function createProductController(svc: IProductService) {
 
 	async function createProduct(req: Request, res: Response) {
 		try {
-			const product: Product = req.body;
+			const product: Omit<Product, "id"> = req.body;
 
 			if (
 				!product.name ||
@@ -44,12 +44,10 @@ export function createProductController(svc: IProductService) {
 
 			svc.createProduct(product);
 
-			res.status(201).json({
+			return res.status(201).json({
 				products: svc.getAllProducts(),
 				menssage: "Producto insertado",
 			});
-
-			return res.status(200).json(product);
 		} catch (error) {
 			console.error("Error al encontrar el item:", error);
 			res.status(500).json({ message: "Error interno del servidor" });
@@ -77,11 +75,29 @@ export function createProductController(svc: IProductService) {
 		}
 	}
 
+	async function deleteProduct(req: Request, res: Response) {
+		try {
+			const { id } = req.params;
+			const deletedProduct = svc.deleteProduct(id);
+
+			if (!deletedProduct)
+				return res.status(404).json({ message: "No hay producto" });
+
+			return res
+				.status(201)
+				.json({ product: deletedProduct, mensaje: "Producto eliminado" });
+		} catch (error) {
+			console.error("Error al encontrar el item:", error);
+			res.status(500).json({ mensaje: "Error interno del servidor" });
+		}
+	}
+
 	return {
 		getAllProducts,
 		getProductById,
 		createProduct,
 		updateProduct,
+		deleteProduct,
 	};
 }
 

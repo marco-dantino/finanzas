@@ -9,9 +9,10 @@ export interface Product {
 export interface IProductService {
 	getAllProducts(): Product[];
 	getProductById(id: string): Product | undefined;
-	createProduct(product: Product): Product;
+	createProduct(product: Omit<Product, "id">): Product;
 	updateProduct(
 		id: string,
 		updateFields: Partial<Product>,
 	): Product | undefined;
+	deleteProduct(id: string): Product | undefined;
 }
