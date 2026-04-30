@@ -1,4 +1,4 @@
-import { HttpError } from "@/v1/res/errors";
+import { HttpError, NotFoundHttpError, RequiredError } from "@/v1/res/errors";
 import type { IProductService, Product } from "./types";
 
 class Service implements IProductService {
@@ -25,6 +25,9 @@ class Service implements IProductService {
 
 	getProductById(id: string): Product | undefined {
 		const findProduct = this.products.find((product) => product.id === id);
+
+		if (!findProduct) throw new NotFoundHttpError("Producto");
+
 		return findProduct;
 	}
 
@@ -33,6 +36,9 @@ class Service implements IProductService {
 			id: crypto.randomUUID(),
 			...newProduct,
 		};
+
+		if (!product.name || !product.stock || !product.unit || !product.unitPrice)
+			throw new RequiredError("name");
 
 		this.products.push(product);
 		return product;
@@ -97,11 +103,12 @@ class Service implements IProductService {
 
 		if (!product) throw new HttpError(404, "Producto no encontrado");
 
-		if (quantity > product.stock)
+		if (quantity > product.stock) {
 			throw new HttpError(
 				400,
 				`Stock insuficiente. Stock actual: ${product.stock}, solicitado: ${quantity}`,
 			);
+		}
 		product.stock -= quantity;
 
 		return product;
@@ -113,7 +120,7 @@ class Service implements IProductService {
 		const index = this.products.findIndex((product) => product.id === id);
 
 		if (index === -1) {
-			return undefined;
+			throw new NotFoundHttpError("Producto");
 		}
 
 		const [deleteProduct] = this.products.splice(index, 1);
