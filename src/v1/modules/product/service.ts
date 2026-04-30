@@ -21,6 +21,10 @@ class Service implements IProductService {
 	getAllProducts(): Product[] {
 		return this.products;
 	}
-}
 
+	getProductById(id: string): Product | undefined {
+		const findProduct = this.products.find((product) => product.id === id);
+		return findProduct;
+	}
+}
 export const ProductSvc: IProductService = new Service();

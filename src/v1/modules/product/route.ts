@@ -7,7 +7,6 @@ const router = Router();
 const productController = createProductController(ProductSvc);
 
 router.get("/", productController.getAllProducts);
-
-export default router;
+router.get("/:id", productController.getProductById);
 
 export { router as productRouter };

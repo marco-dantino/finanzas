@@ -8,4 +8,5 @@ export interface Product {
 
 export interface IProductService {
 	getAllProducts(): Product[];
+	getProductById(id: string): Product | undefined;
 }

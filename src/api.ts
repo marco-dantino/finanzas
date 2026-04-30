@@ -3,23 +3,6 @@ import express from "express";
 import { v1ErrorHandler } from "@/v1/res/error-handler";
 import { v1Router } from "@/v1/route";
 
-// const products: Product[] = [
-// 	{
-// 		id: "1",
-// 		name: "Manzana",
-// 		unitPrice: 850,
-// 		stock: 20,
-// 		unit: "kg",
-// 	},
-// 	{
-// 		id: "2",
-// 		name: "Naranja",
-// 		unitPrice: 630,
-// 		stock: 50,
-// 		unit: "kg",
-// 	},
-// ];
-
 export type Version = "1";
 export type ApiPath = `/api/v${Version}`;
 
@@ -36,21 +19,6 @@ function mountVersion(
 const api = express();
 
 api.use(express.json());
-
-// api.get("/products/:id", (req: Request, res: Response) => {
-// 	try {
-// 		const { id } = req.params; //destruc //lo mismo es //const id = req.params.id;
-
-// 		const findProduct = products.find((product) => product.id === id);
-
-// 		if (!products)
-// 			return res.status(404).json({ menssage: "No hay productos" });
-// 		return res.json(findProduct);
-// 	} catch (error) {
-// 		console.error("Error al encontrar el item:", error);
-// 		res.status(500).json({ mensaje: "Error interno del servidor" });
-// 	}
-// });
 
 // api.post("/product", (req: Request, res: Response) => {
 // 	try {
