@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { HttpError } from "@/v1/res/errors";
 import type { IProductService, Product } from "./types";
 
 export function createProductController(svc: IProductService) {
@@ -33,20 +34,20 @@ export function createProductController(svc: IProductService) {
 				product.stock == null ||
 				!product.unit
 			)
-				return res.status(400).json({ menssage: "Falta campo obligatorio" });
+				return res.status(400).json({ message: "Falta campo obligatorio" });
 
 			if (typeof product.name !== "string")
-				return res.status(404).json({ menssage: "Nombre incorrecto." });
+				return res.status(404).json({ message: "Nombre incorrecto." });
 			if (typeof product.unitPrice !== "number" || product.unitPrice < 0)
-				return res.status(404).json({ menssage: "Unit Price incorrecto." });
+				return res.status(404).json({ message: "Unit Price incorrecto." });
 			if (typeof product.stock !== "number" || product.unitPrice < 0)
-				return res.status(404).json({ menssage: "Stock incorrecto." });
+				return res.status(404).json({ message: "Stock incorrecto." });
 
 			svc.createProduct(product);
 
 			return res.status(201).json({
 				products: svc.getAllProducts(),
-				menssage: "Producto insertado",
+				message: "Producto insertado",
 			});
 		} catch (error) {
 			console.error("Error al encontrar el item:", error);
@@ -88,7 +89,58 @@ export function createProductController(svc: IProductService) {
 				.json({ product: deletedProduct, mensaje: "Producto eliminado" });
 		} catch (error) {
 			console.error("Error al encontrar el item:", error);
-			res.status(500).json({ mensaje: "Error interno del servidor" });
+			res.status(500).json({ message: "Error interno del servidor" });
+		}
+	}
+
+	async function incrementStock(req: Request, res: Response) {
+		try {
+			const { id } = req.params;
+			const { quantity } = req.body;
+
+			const incrementedProduct = svc.incrementStock(id, quantity);
+
+			if (!incrementedProduct)
+				return res.status(404).json({ message: "Error del obj" });
+			if (incrementedProduct.stock < 0)
+				return res
+					.status(404)
+					.json({ message: "La cantidad debe ser superior a 0" });
+
+			return res.status(201).json({
+				product: {
+					id: incrementedProduct.id,
+					name: incrementedProduct.name,
+					stock: incrementedProduct.stock,
+				},
+				message: "Incrementado el Product",
+			});
+		} catch (error) {
+			console.error("Error al encontrar el item:", error);
+			res.status(500).json({ message: "Error interno del servidor" });
+		}
+	}
+
+	async function decreaseStock(req: Request, res: Response) {
+		try {
+			const { id } = req.params;
+			const { quantity } = req.body;
+
+			const incrementedProduct = svc.decreaseStock(id, quantity);
+
+			return res.status(201).json({
+				product: {
+					id: incrementedProduct.id,
+					name: incrementedProduct.name,
+					stock: incrementedProduct.stock,
+				},
+				message: "Incrementado el Product",
+			});
+		} catch (error) {
+			console.error("Error al encontrar el item:", error);
+			if (error instanceof HttpError) {
+				res.status(error.statusCode).json({ message: error.message });
+			}
 		}
 	}
 
@@ -98,6 +150,9 @@ export function createProductController(svc: IProductService) {
 		createProduct,
 		updateProduct,
 		deleteProduct,
+
+		incrementStock,
+		decreaseStock,
 	};
 }
 

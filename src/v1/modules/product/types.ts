@@ -15,4 +15,6 @@ export interface IProductService {
 		updateFields: Partial<Product>,
 	): Product | undefined;
 	deleteProduct(id: string): Product | undefined;
+	incrementStock(id: string, quantity: number): Product | undefined;
+	decreaseStock(id: string, quantity: number): Product;
 }

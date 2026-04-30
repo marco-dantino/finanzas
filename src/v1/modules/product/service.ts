@@ -1,3 +1,4 @@
+import { HttpError } from "@/v1/res/errors";
 import type { IProductService, Product } from "./types";
 
 class Service implements IProductService {
@@ -58,7 +59,6 @@ class Service implements IProductService {
 
 		return updatedProduct;
 	}
-
 	//vieja forma
 	// 	updateProduct(
 	// 	id: string,
@@ -81,6 +81,31 @@ class Service implements IProductService {
 
 	// 	return updatedProduct;
 	// }
+
+	incrementStock(id: string, quantity: number): Product | undefined {
+		const product = this.products.find((product) => product.id === id);
+
+		if (!product) return undefined;
+
+		product.stock += quantity;
+
+		return product;
+	}
+
+	decreaseStock(id: string, quantity: number): Product {
+		const product = this.products.find((product) => product.id === id);
+
+		if (!product) throw new HttpError(404, "Producto no encontrado");
+
+		if (quantity > product.stock)
+			throw new HttpError(
+				400,
+				`Stock insuficiente. Stock actual: ${product.stock}, solicitado: ${quantity}`,
+			);
+		product.stock -= quantity;
+
+		return product;
+	}
 
 	deleteProduct(id: string): Product | undefined {
 		///const deletedProduct = this.products.find((product) => product.id === id);
