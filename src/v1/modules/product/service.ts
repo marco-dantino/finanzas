@@ -37,8 +37,14 @@ class Service implements IProductService {
 			...newProduct,
 		};
 
-		if (!product.name || !product.stock || !product.unit || !product.unitPrice)
+		if (
+			!product.name ||
+			!product.stock ||
+			!product.unit ||
+			!product.unitPrice
+		) {
 			throw new RequiredError("name");
+		}
 
 		this.products.push(product);
 		return product;
@@ -53,7 +59,7 @@ class Service implements IProductService {
 		);
 
 		if (productIndex === -1) {
-			return undefined;
+			throw new NotFoundHttpError("Producto");
 		}
 
 		const updatedProduct: Product = {
@@ -114,7 +120,7 @@ class Service implements IProductService {
 		return product;
 	}
 
-	deleteProduct(id: string): Product | undefined {
+	deleteProduct(id: string): Product {
 		///const deletedProduct = this.products.find((product) => product.id === id);
 		///this.products.filter((product) => product.id !== id);
 		const index = this.products.findIndex((product) => product.id === id);
@@ -126,6 +132,18 @@ class Service implements IProductService {
 		const [deleteProduct] = this.products.splice(index, 1);
 
 		return deleteProduct;
+	}
+
+	lowStock(limit: number): Product[] {
+		if (!this.products) {
+			throw new NotFoundHttpError("Producto");
+		}
+
+		// const findProducts = this.products.filter(
+		// 	(product) => product.stock < limit,
+		// );
+
+		return this.products.filter((product) => product.stock < limit);
 	}
 }
 

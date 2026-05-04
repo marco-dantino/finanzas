@@ -7,6 +7,7 @@ const router = Router();
 const productController = createProductController(ProductSvc);
 
 router.get("/", productController.getAllProducts);
+router.get("/low-stock", productController.lowStock);
 router.get("/:id", productController.getProductById);
 
 router.post("/", productController.createProduct);

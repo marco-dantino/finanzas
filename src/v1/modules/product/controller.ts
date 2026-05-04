@@ -10,6 +10,18 @@ export function createProductController(svc: IProductService) {
 		return res.status(200).json(products);
 	}
 
+	async function lowStock(req: Request, res: Response) {
+		const limitParam = req.query.limit;
+		const limit = limitParam ? Number(limitParam) : 5;
+
+		console.log("Param", limitParam);
+		console.log(limit);
+
+		const products = svc.lowStock(limit);
+
+		return res.status(200).json(products);
+	}
+
 	async function getProductById(req: Request, res: Response) {
 		try {
 			const { id } = req.params;
@@ -130,6 +142,7 @@ export function createProductController(svc: IProductService) {
 
 		incrementStock,
 		decreaseStock,
+		lowStock,
 	};
 }
 
