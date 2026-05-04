@@ -1,5 +1,4 @@
 import type { Request, Response } from "express";
-import { HttpError, NotFoundHttpError, RequiredError } from "@/v1/res/errors";
 import type { IProductService, Product } from "./types";
 
 export function createProductController(svc: IProductService) {
