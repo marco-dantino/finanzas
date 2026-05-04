@@ -20,13 +20,19 @@ class Service implements IProductService {
 	];
 
 	getAllProducts(): Product[] {
+		if (!this.products.length) {
+			throw new HttpError(404, "No existen productos");
+		}
+
 		return this.products;
 	}
 
-	getProductById(id: string): Product | undefined {
+	getProductById(id: string): Product {
 		const findProduct = this.products.find((product) => product.id === id);
 
-		if (!findProduct) throw new NotFoundHttpError("Producto");
+		if (!findProduct) {
+			throw new NotFoundHttpError("Producto");
+		}
 
 		return findProduct;
 	}
@@ -62,6 +68,10 @@ class Service implements IProductService {
 			throw new NotFoundHttpError("Producto");
 		}
 
+		if (!updateFields) {
+			throw new HttpError(400, "No hay niguna modificacion");
+		}
+
 		const updatedProduct: Product = {
 			...this.products[productIndex],
 			...updateFields,
@@ -94,11 +104,19 @@ class Service implements IProductService {
 	// 	return updatedProduct;
 	// }
 
-	incrementStock(id: string, quantity: number): Product | undefined {
+	incrementStock(id: string, quantity: number): Product {
 		const product = this.products.find((product) => product.id === id);
 
-		if (!product) return undefined;
+		if (!product) {
+			throw new NotFoundHttpError("Producto Not Found");
+		}
 
+		if (quantity <= 0) {
+			throw new HttpError(
+				400,
+				`Stock insuficiente. Stock actual: ${product.stock}, solicitado: ${quantity}`,
+			);
+		}
 		product.stock += quantity;
 
 		return product;
@@ -107,7 +125,9 @@ class Service implements IProductService {
 	decreaseStock(id: string, quantity: number): Product {
 		const product = this.products.find((product) => product.id === id);
 
-		if (!product) throw new HttpError(404, "Producto no encontrado");
+		if (!product) {
+			throw new NotFoundHttpError("Producto Not Found");
+		}
 
 		if (quantity > product.stock) {
 			throw new HttpError(
