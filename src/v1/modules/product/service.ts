@@ -4,16 +4,16 @@ import type { IProductService, Product } from "./types";
 class Service implements IProductService {
 	private products: Product[] = [
 		{
-			id: "1",
-			name: "Manzana",
+			id: "a1b2c3",
+			name: "Tomato",
 			unitPrice: 850,
 			stock: 20,
 			unit: "kg",
 		},
 		{
-			id: "2",
+			id: "d4e5f6",
 			name: "Naranja",
-			unitPrice: 630,
+			unitPrice: 600,
 			stock: 50,
 			unit: "kg",
 		},
