@@ -8,12 +8,11 @@ export interface Sale {
 	id: string;
 	date: string;
 	items: SaleItem[];
+	total: number;
 }
 
-export type SaleResponse = Sale & { total: number };
-
 export interface ISaleService {
-	getAllSales(): Sale[];
-	createSale(sale: Omit<Sale, "id" | "date">): SaleResponse;
-	getSalesByDateRange(fromDate: string, toDate: string): string[];
+	createSale(sale: Omit<Sale, "id" | "date">): Sale;
+	getSalesByDateRange(fromDate: string, toDate: string): Sale[];
+	getById(id: string): Sale;
 }

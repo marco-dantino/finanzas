@@ -1,6 +1,6 @@
-import { HttpError, NotFoundHttpError, RequiredError } from "@/v1/res/errors";
+import { HttpError, NotFoundHttpError } from "@/v1/res/errors";
 import { ProductSvc as svcProduct } from "../product/service";
-import type { ISaleService, Sale, SaleResponse } from "./type";
+import type { ISaleService, Sale } from "./types";
 
 class Service implements ISaleService {
 	private sales = [
@@ -48,45 +48,48 @@ class Service implements ISaleService {
 		},
 	];
 
-	getAllSales(): Sale[] {
-		if (!this.sales.length) {
-			throw new HttpError(404, "No existen productos");
-		}
+	createSale(newSale: Omit<Sale, "id" | "date">): Sale {
+		const items = newSale.items.map((item) => {
+			const product = svcProduct.decreaseStock(item.productId, item.quantity);
+			return { ...item, unitPrice: product.unitPrice };
+		});
 
-		return this.sales;
-	}
-
-	createSale(newSale: Omit<Sale, "id" | "date">): SaleResponse {
 		const sale: Sale = {
 			id: crypto.randomUUID(),
 			date: new Date().toISOString(),
-			items: newSale.items.map((item) => {
-				const product = svcProduct.decreaseStock(item.productId, item.quantity);
-				return { ...item, unitPrice: product.unitPrice };
-			}),
-		};
-
-		this.sales.push(sale);
-
-		return {
-			...sale,
-			total: sale.items.reduce(
+			items,
+			total: items.reduce(
 				(acc, item) => acc + item.quantity * item.unitPrice,
 				0,
 			),
 		};
+
+		this.sales.push(sale);
+
+		return sale;
 	}
 
-	getSalesByDateRange(fromDate: string, toDate: string): string[] {
+	getSalesByDateRange(fromDate: string, toDate: string): Sale[] {
 		const from = new Date(fromDate);
 		const to = new Date(toDate);
 
-		return this.sales
-			.filter((sale) => {
-				const dateSale = new Date(sale.date);
-				return dateSale >= from && dateSale <= to;
-			})
-			.map((sale) => new Date(sale.date).toLocaleDateString("en-CA"));
+		const nuevo = this.sales.filter((sale) => {
+			const dateSale = new Date(sale.date);
+			return dateSale >= from && dateSale <= to;
+		});
+
+		console.log(nuevo);
+		return nuevo;
+	}
+
+	getById(id: string): Sale {
+		const findSale = this.sales.find((sale) => sale.id === id);
+
+		if (!findSale) {
+			throw new NotFoundHttpError("Producto");
+		}
+
+		return findSale;
 	}
 }
 
