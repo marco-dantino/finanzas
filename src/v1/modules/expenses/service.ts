@@ -92,8 +92,22 @@ class Service implements IExpenseService {
 		return newExpense;
 	}
 
-	getByCategoryDateRange(fromDate: string, toDate: string): Expense[] {
-		return this.expenses;
+	getByCategoryDateRange(
+		category: string,
+		fromDate: string,
+		toDate: string,
+	): Expense[] {
+		const from = new Date(fromDate);
+		const to = new Date(toDate);
+
+		const filtered = this.expenses.filter(
+			(expense) =>
+				expense.category === category &&
+				new Date(expense.date) >= from &&
+				new Date(expense.date) <= to,
+		);
+
+		return filtered;
 	}
 
 	getById(id: string): Expense {
