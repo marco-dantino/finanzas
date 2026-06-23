@@ -17,7 +17,30 @@ export function createExpenseController(svc: IExpenseService) {
 		return res.status(201).json(response);
 	}
 
+	async function getByCategoryDateRange(req: Request, res: Response) {
+		const { category, from, to } = req.query as {
+			category: string;
+			from: string;
+			to: string;
+		};
+
+		const expenseFiltered: Expense[] = svc.getByCategoryDateRange(
+			category,
+			from,
+			to,
+		);
+
+		const response: SuccessResponse = {
+			data: expenseFiltered,
+			message: "Filtrado gil",
+			success: true,
+		};
+
+		return res.status(200).json(response);
+	}
+
 	return {
 		createExpense,
+		getByCategoryDateRange,
 	};
 }
