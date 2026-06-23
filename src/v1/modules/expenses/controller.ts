@@ -32,7 +32,7 @@ export function createExpenseController(svc: IExpenseService) {
 
 		const response: SuccessResponse = {
 			data: expenseFiltered,
-			message: "Filtrado gil",
+			message: "Gastos filtrados",
 			success: true,
 		};
 
