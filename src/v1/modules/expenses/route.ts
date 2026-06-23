@@ -7,6 +7,5 @@ const expenseController = createExpenseController(ExpenseSvc);
 
 router.post("/", expenseController.createExpense);
 router.get("/", expenseController.getByCategoryDateRange);
-// router.get("/:id", expenseController.getById);
 
 export { router as expenseRouter };

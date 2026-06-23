@@ -10,6 +10,9 @@ export interface Expense {
 
 export interface IExpenseService {
 	createExpense(expense: Omit<Expense, "id" | "date">): Expense;
-	getById(id: string): Expense;
-	getByCategoryDateRange(category:string, fromDate: string, toDate: string): Expense[];
+	getByCategoryDateRange(
+		category: string,
+		fromDate: string,
+		toDate: string,
+	): Expense[];
 }

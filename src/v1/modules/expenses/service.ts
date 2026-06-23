@@ -109,10 +109,6 @@ class Service implements IExpenseService {
 
 		return filtered;
 	}
-
-	getById(id: string): Expense {
-		return this.expenses[1];
-	}
 }
 
 export const ExpenseSvc: IExpenseService = new Service();
