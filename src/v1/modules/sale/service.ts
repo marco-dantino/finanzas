@@ -48,7 +48,7 @@ class Service implements ISaleService {
 		},
 	];
 
-	createSale(newSale: Omit<Sale, "id" | "date">): Sale {
+	createSale(newSale: Omit<Sale, "id" | "date"> & { date?: string }): Sale {
 		const items = newSale.items.map((item) => {
 			const product = svcProduct.decreaseStock(item.productId, item.quantity);
 			return { ...item, unitPrice: product.unitPrice };

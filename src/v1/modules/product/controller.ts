@@ -63,7 +63,7 @@ export function createProductController(svc: IProductService) {
 
 		const incrementedProduct = svc.incrementStock(id, quantity);
 
-		return res.status(201).json({
+		return res.status(200).json({
 			product: {
 				id: incrementedProduct.id,
 				name: incrementedProduct.name,

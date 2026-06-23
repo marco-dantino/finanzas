@@ -34,7 +34,6 @@ export function createSaleController(svc: ISaleService) {
 
 	async function getSalesByDateRange(req: Request, res: Response) {
 		const { from, to } = req.query;
-		console.log("FECHAS DEL QUERY", from, to);
 
 		const findDates = svc.getSalesByDateRange(String(from), String(to));
 
